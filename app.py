@@ -2,27 +2,30 @@ import streamlit as st
 import pandas as pd
 import random
 import re
-import os
 from datetime import datetime, timedelta
 
 # 1. Настройка страницы
 st.set_page_config(page_title="AI Тревел-Агент", page_icon="✈️", layout="wide")
 
-# Определяем папку, где лежит app.py
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-
 # 2. Загрузка данных
-@st.cache_data
+# @st.cache_data  <-- кэш временно отключен для отладки
 def load_data():
-    hotels = pd.read_csv(os.path.join(SCRIPT_DIR, 'hotels_dictionary.csv'), encoding='utf-8')
-    flights = pd.read_csv(os.path.join(SCRIPT_DIR, 'flights_mock.csv'), encoding='utf-8')
-    transfers = pd.read_csv(os.path.join(SCRIPT_DIR, 'transfers_mock.csv'), encoding='utf-8')
+    # Ссылки на "сырые" файлы из вашего репозитория на GitHub (формат refs/heads)
+    url_hotels = 'https://raw.githubusercontent.com/lonatali0810-LNA/travel-agent-prototype/refs/heads/main/hotels_dictionary.csv'
+    url_flights = 'https://raw.githubusercontent.com/lonatali0810-LNA/travel-agent-prototype/refs/heads/main/flights_mock.csv'
+    url_transfers = 'https://raw.githubusercontent.com/lonatali0810-LNA/travel-agent-prototype/refs/heads/main/transfers_mock.csv'
+    
+    hotels = pd.read_csv(url_hotels, encoding='utf-8')
+    flights = pd.read_csv(url_flights, encoding='utf-8')
+    transfers = pd.read_csv(url_transfers, encoding='utf-8')
     return hotels, flights, transfers
+
 
 try:
     df_hotels, df_flights, df_transfers = load_data()
-except FileNotFoundError:
-    st.error("❌ Ошибка: CSV-файлы не найдены. Убедитесь, что они лежат в той же папке, что и app.py")
+except Exception as e:
+    # Ловим любую ошибку (не только FileNotFoundError), чтобы видеть, что именно пошло не так
+    st.error(f"❌ Ошибка при загрузке данных: {e}")
     st.stop()
 
 # Вспомогательная функция для звезд
@@ -173,15 +176,13 @@ if st.session_state.selected_package is not None:
                         'flight_id': pkg['flight']['flight_id'] if pkg['flight'] is not None else '',
                         'transfer_id': pkg['transfer']['transfer_id'] if pkg['transfer'] is not None else ''
                     }
-                    
+                   
                     try:
-                        # Используем SCRIPT_DIR для чтения bookings.csv
-                        bookings_path = os.path.join(SCRIPT_DIR, 'bookings.csv')
-                        current_bookings = pd.read_csv(bookings_path, encoding='utf-8')
-                        current_bookings = pd.concat([current_bookings, pd.DataFrame([new_booking])], ignore_index=True)
-                        current_bookings.to_csv(bookings_path, index=False, encoding='utf-8')
+                        # Временно отключаем запись в файл, так как облако только для чтения
+                        # Просто имитируем успешное сохранение для демонстрации
+                        print("Новая бронь (демо):", new_booking) 
                         
-                        st.success(f"✅ Бронь {new_booking['reservation_number']} успешно создана!")
+                        st.success(f"✅ Бронь {new_booking['reservation_number']} успешно создана! (Демо-режим)")
                         st.info(f"Ваш ID клиента: {client_id} (сохранен для будущих покупок)")
                         st.balloons()
                         
