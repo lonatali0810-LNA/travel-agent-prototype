@@ -2,17 +2,21 @@ import streamlit as st
 import pandas as pd
 import random
 import re
+import os
 from datetime import datetime, timedelta
 
 # 1. Настройка страницы
 st.set_page_config(page_title="AI Тревел-Агент", page_icon="✈️", layout="wide")
 
+# Определяем папку, где лежит app.py
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
 # 2. Загрузка данных
 @st.cache_data
 def load_data():
-    hotels = pd.read_csv('hotels_dictionary.csv', encoding='utf-8')
-    flights = pd.read_csv('flights_mock.csv', encoding='utf-8')
-    transfers = pd.read_csv('transfers_mock.csv', encoding='utf-8')
+    hotels = pd.read_csv(os.path.join(SCRIPT_DIR, 'hotels_dictionary.csv'), encoding='utf-8')
+    flights = pd.read_csv(os.path.join(SCRIPT_DIR, 'flights_mock.csv'), encoding='utf-8')
+    transfers = pd.read_csv(os.path.join(SCRIPT_DIR, 'transfers_mock.csv'), encoding='utf-8')
     return hotels, flights, transfers
 
 try:
@@ -171,9 +175,11 @@ if st.session_state.selected_package is not None:
                     }
                     
                     try:
-                        current_bookings = pd.read_csv('bookings.csv', encoding='utf-8')
+                        # Используем SCRIPT_DIR для чтения bookings.csv
+                        bookings_path = os.path.join(SCRIPT_DIR, 'bookings.csv')
+                        current_bookings = pd.read_csv(bookings_path, encoding='utf-8')
                         current_bookings = pd.concat([current_bookings, pd.DataFrame([new_booking])], ignore_index=True)
-                        current_bookings.to_csv('bookings.csv', index=False, encoding='utf-8')
+                        current_bookings.to_csv(bookings_path, index=False, encoding='utf-8')
                         
                         st.success(f"✅ Бронь {new_booking['reservation_number']} успешно создана!")
                         st.info(f"Ваш ID клиента: {client_id} (сохранен для будущих покупок)")
