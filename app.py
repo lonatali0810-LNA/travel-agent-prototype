@@ -10,10 +10,10 @@ st.set_page_config(page_title="AI Тревел-Агент", page_icon="✈️", 
 # 2. Загрузка данных
 # @st.cache_data  <-- кэш временно отключен для отладки
 def load_data():
-    # Ссылки на "сырые" файлы из вашего репозитория на GitHub (формат refs/heads)
-    url_hotels = 'https://raw.githubusercontent.com/lonatali0810-LNA/travel-agent-prototype/refs/heads/main/hotels_dictionary.csv'
-    url_flights = 'https://raw.githubusercontent.com/lonatali0810-LNA/travel-agent-prototype/refs/heads/main/flights_mock.csv'
-    url_transfers = 'https://raw.githubusercontent.com/lonatali0810-LNA/travel-agent-prototype/refs/heads/main/transfers_mock.csv'
+     # Ссылки на "сырые" файлы из репозитория на GitHub (формат main)
+    url_hotels = 'https://raw.githubusercontent.com/lonatali0810-LNA/travel-agent-prototype/main/hotels_dictionary.csv'
+    url_flights = 'https://raw.githubusercontent.com/lonatali0810-LNA/travel-agent-prototype/main/flights_mock.csv'
+    url_transfers = 'https://raw.githubusercontent.com/lonatali0810-LNA/travel-agent-prototype/main/transfers_mock.csv'
     
     hotels = pd.read_csv(url_hotels, encoding='utf-8')
     flights = pd.read_csv(url_flights, encoding='utf-8')
