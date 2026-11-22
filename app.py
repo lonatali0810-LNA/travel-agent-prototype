@@ -16,7 +16,7 @@ def load_data():
     script_dir = os.path.dirname(os.path.abspath(__file__))
     
     # Строим пути к файлам в этой же папке
-    hotels_path = os.path.join(script_dir, 'hotels_dictionary.csv')
+    hotels_path = os.path.join(script_dir, 'hotels_dictionary_small.csv')
     flights_path = os.path.join(script_dir, 'flights_mock.csv')
     transfers_path = os.path.join(script_dir, 'transfers_mock.csv')
     
