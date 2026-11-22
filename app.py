@@ -2,38 +2,28 @@ import streamlit as st
 import pandas as pd
 import random
 import re
+import os 
 from datetime import datetime, timedelta
-import requests
-from io import StringIO
+
 
 # 1. Настройка страницы
 st.set_page_config(page_title="AI Тревел-Агент", page_icon="✈️", layout="wide")
 
 # 2. Загрузка данных
-# @st.cache_data  <-- кэш временно отключен для отладки
+@st.cache_data  # Кэш теперь можно вернуть, он не помешает
 def load_data():
-    # Ссылки на "сырые" файлы (формат main)
-    url_hotels = 'https://raw.githubusercontent.com/lonatali0810-LNA/travel-agent-prototype/refs/heads/main/hotels_dictionary.csv'
-    url_flights = 'https://raw.githubusercontent.com/lonatali0810-LNA/travel-agent-prototype/refs/heads/main/flights_mock.csv'
-    url_transfers = 'https://raw.githubusercontent.com/lonatali0810-LNA/travel-agent-prototype/refs/heads/main/transfers_mock.csv'
+    # Определяем папку, где лежит этот скрипт (app.py) на сервере Layero
+    script_dir = os.path.dirname(os.path.abspath(__file__))
     
-    # Добавляем заголовок User-Agent, чтобы GitHub не блокировал запрос
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-    }
+    # Строим пути к файлам в этой же папке
+    hotels_path = os.path.join(script_dir, 'hotels_dictionary.csv')
+    flights_path = os.path.join(script_dir, 'flights_mock.csv')
+    transfers_path = os.path.join(script_dir, 'transfers_mock.csv')
     
-    # Скачиваем данные как текст и превращаем в DataFrame
-    response_hotels = requests.get(url_hotels, headers=headers)
-    response_hotels.raise_for_status() # Если будет ошибка, она покажет точный код
-    hotels = pd.read_csv(StringIO(response_hotels.text), encoding='utf-8')
-    
-    response_flights = requests.get(url_flights, headers=headers)
-    response_flights.raise_for_status()
-    flights = pd.read_csv(StringIO(response_flights.text), encoding='utf-8')
-    
-    response_transfers = requests.get(url_transfers, headers=headers)
-    response_transfers.raise_for_status()
-    transfers = pd.read_csv(StringIO(response_transfers.text), encoding='utf-8')
+    # Читаем файлы
+    hotels = pd.read_csv(hotels_path, encoding='utf-8')
+    flights = pd.read_csv(flights_path, encoding='utf-8')
+    transfers = pd.read_csv(transfers_path, encoding='utf-8')
     
     return hotels, flights, transfers
 
