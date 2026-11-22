@@ -13,9 +13,9 @@ st.set_page_config(page_title="AI Тревел-Агент", page_icon="✈️", 
 # @st.cache_data  <-- кэш временно отключен для отладки
 def load_data():
     # Ссылки на "сырые" файлы (формат main)
-    url_hotels = 'https://raw.githubusercontent.com/lonatali0810-LNA/travel-agent-prototype/main/hotels_dictionary.csv'
-    url_flights = 'https://raw.githubusercontent.com/lonatali0810-LNA/travel-agent-prototype/main/flights_mock.csv'
-    url_transfers = 'https://raw.githubusercontent.com/lonatali0810-LNA/travel-agent-prototype/main/transfers_mock.csv'
+    url_hotels = 'https://raw.githubusercontent.com/lonatali0810-LNA/travel-agent-prototype/refs/heads/main/hotels_dictionary.csv'
+    url_flights = 'https://raw.githubusercontent.com/lonatali0810-LNA/travel-agent-prototype/refs/heads/main/flights_mock.csv'
+    url_transfers = 'https://raw.githubusercontent.com/lonatali0810-LNA/travel-agent-prototype/refs/heads/main/transfers_mock.csv'
     
     # Добавляем заголовок User-Agent, чтобы GitHub не блокировал запрос
     headers = {
