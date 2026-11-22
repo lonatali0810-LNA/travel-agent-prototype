@@ -3,6 +3,8 @@ import pandas as pd
 import random
 import re
 from datetime import datetime, timedelta
+import requests
+from io import StringIO
 
 # 1. Настройка страницы
 st.set_page_config(page_title="AI Тревел-Агент", page_icon="✈️", layout="wide")
@@ -10,21 +12,36 @@ st.set_page_config(page_title="AI Тревел-Агент", page_icon="✈️", 
 # 2. Загрузка данных
 # @st.cache_data  <-- кэш временно отключен для отладки
 def load_data():
-     # Ссылки на "сырые" файлы из репозитория на GitHub (формат main)
+    # Ссылки на "сырые" файлы (формат main)
     url_hotels = 'https://raw.githubusercontent.com/lonatali0810-LNA/travel-agent-prototype/main/hotels_dictionary.csv'
     url_flights = 'https://raw.githubusercontent.com/lonatali0810-LNA/travel-agent-prototype/main/flights_mock.csv'
     url_transfers = 'https://raw.githubusercontent.com/lonatali0810-LNA/travel-agent-prototype/main/transfers_mock.csv'
     
-    hotels = pd.read_csv(url_hotels, encoding='utf-8')
-    flights = pd.read_csv(url_flights, encoding='utf-8')
-    transfers = pd.read_csv(url_transfers, encoding='utf-8')
+    # Добавляем заголовок User-Agent, чтобы GitHub не блокировал запрос
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+    }
+    
+    # Скачиваем данные как текст и превращаем в DataFrame
+    response_hotels = requests.get(url_hotels, headers=headers)
+    response_hotels.raise_for_status() # Если будет ошибка, она покажет точный код
+    hotels = pd.read_csv(StringIO(response_hotels.text), encoding='utf-8')
+    
+    response_flights = requests.get(url_flights, headers=headers)
+    response_flights.raise_for_status()
+    flights = pd.read_csv(StringIO(response_flights.text), encoding='utf-8')
+    
+    response_transfers = requests.get(url_transfers, headers=headers)
+    response_transfers.raise_for_status()
+    transfers = pd.read_csv(StringIO(response_transfers.text), encoding='utf-8')
+    
     return hotels, flights, transfers
 
 
 try:
     df_hotels, df_flights, df_transfers = load_data()
 except Exception as e:
-    # Ловим любую ошибку (не только FileNotFoundError), чтобы видеть, что именно пошло не так
+    # Ловим любую ошибку, чтобы видеть, что именно пошло не так
     st.error(f"❌ Ошибка при загрузке данных: {e}")
     st.stop()
 
